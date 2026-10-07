@@ -19,11 +19,13 @@ document.addEventListener('DOMContentLoaded', function () {
       const remember = document.getElementById('remember');
 
       let isValid = true;
+      const emailValue = email.value.trim();
+      const shouldRemember = !!(remember && remember.checked);
 
-      if (!email.value.trim()) {
+      if (!emailValue) {
         auth.setFieldError('email', 'Email is required.');
         isValid = false;
-      } else if (!auth.isValidEmail(email.value)) {
+      } else if (!auth.isValidEmail(emailValue)) {
         auth.setFieldError('email', 'Please enter a valid email address.');
         isValid = false;
       } else {
@@ -45,8 +47,8 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
 
-      if (remember && remember.checked) {
-        auth.saveRememberedEmail(email.value);
+      if (shouldRemember) {
+        auth.saveRememberedEmail(emailValue);
       } else {
         auth.clearRememberedEmail();
       }
@@ -58,11 +60,13 @@ document.addEventListener('DOMContentLoaded', function () {
       );
 
       loginForm.reset();
+
       if (remember) {
-        remember.checked = true;
+        remember.checked = shouldRemember;
       }
+
       if (email) {
-        email.value = rememberedEmail || '';
+        email.value = shouldRemember ? emailValue : '';
       }
     });
   }
